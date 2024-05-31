@@ -80,3 +80,45 @@ Tambien, se nos encarga la creacion de una aplicacion o sistema que permita pred
 ## Deploy
 # Tecnologias y Herramientas
 # Equipo
+
+<div align="center">
+
+<!-- Primera fila -->
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/106486985?s=400&u=f2b5a4953b674b71e5df9e4c71c89ee2ae75fa65&v=4" width="200" height="200"><br><strong>Marco</strong><br>
+      <a href="https://www.linkedin.com/in/marco-antonio-caro-22459711b"><img src="assets/linkedin.png" style="width:20px;"></a>
+      <a href="https://github.com/marco11235813"><img src="assets/github.png" style="width:20px;"></a>
+    </td>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/125699535?v=4" width="200" height="200"><br><strong>Adrian</strong><br>
+      <a href="http://www.linkedin.com/in/juan-manuel-yunes-mor"><img src="assets/linkedin.png" style="width:20px;"></a>
+      <a href="https://github.com/jyunesmor"><img src="assets/github.png" style="width:20px;"></a>
+    </td>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/101422922?v=4" width="200" height="200"><br><strong>Guillermo</strong><br>
+      <a href="http://www.linkedin.com/in/leandro-mambelli-79834a6b"><img src="assets/linkedin.png" style="width:20px;"></a>
+      <a href="https://github.com/guillermo"><img src="assets/github.png" style="width:20px;"></a>
+    </td>
+  </tr>
+</table>
+
+<!-- Segunda fila -->
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/112107967?v=4" width="200" height="200"><br><strong>Jorge</strong><br>
+      <a href="https://www.linkedin.com/in/jorge-antonio"><img src="assets/linkedin.png" style="width:20px;"></a>
+      <a href="https://github.com/jorge11235813"><img src="assets/github.png" style="width:20px;"></a>
+    </td>
+    <td align="center">
+      <img src="https://avatars.githubusercontent.com/u/108310078?v=4" width="200" height="200"><br><strong>Matias</strong><br>
+      <a href="http://www.linkedin.com/in/matias"><img src="assets/linkedin.png" style="width:20px;"></a>
+      <a href="https://github.com/matias"><img src="assets/github.png" style="width:20px;"></a>
+    </td>
+  </tr>
+</table>
+
+</div>
+
