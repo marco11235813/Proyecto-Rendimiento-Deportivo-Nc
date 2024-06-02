@@ -22,13 +22,13 @@
 
 # Índice
 
-- [Descripción](#Descripcion)
+- [Descripción](#Descripción)
 - [Introducción](#Introducción)
 - [Objetivos](#Objetivos)
 - [Datos](#Datos)
 - [Desarrollo](#Desarrollo)
   - [ETL](#ETL)
-  - [Análisis Exploratorio de Datos (EDA)](#Análisis%20Exploratorio%20de%20Datos (EDA))
+  - [Análisis Exploratorio de Datos (EDA)](#Análisis%20Exploratorio%20de%20Datos%20(EDA))
   - [Dashboard](#Dashboard)
   - [Modelo](#Modelo)
   - [Deploy](#Deploy)
@@ -71,6 +71,33 @@ Tambien, se nos encarga la creacion de una aplicacion o sistema que permita pred
 
 # Datos
 
+Los datos utilizados, provienen de dos fuentes:
+
+* Transfermarkt
+* Kaggle
+
+Los datos extraidos de Kaggle estan integrados por 9 ficheros con formato csv, los cuales contienen data referente a clubes, competencias y jugadores de futbol.
+Estos son:
+
+* appearances
+* club_games
+* clubs
+* competitions
+* game_events
+* game_lineups
+* games
+* player_valuations
+* players
+
+Aunque estos ficheros son extraidos de kaggle, originalmente contienen datos de la plataforma Transfermarket. Por lo que decidimos complementar estos ficheros extrayendo desde la plataforma datos sobre una liga en particular, en este caso la liga de Brasil o el Brasileirao, para complementar nuestros datos y tener un contraste con lo cual comparar nuestra data original y tambien con la cual probar distintos análisis, postulados, y modelos que constuyamos a lo largo del desarrollo del proyecto.
+Esta data se descargo en una carpeta comprimida, archivos json liga brasil.zip, la cual cuenta con los siguientes ficheros:
+
+* clubs
+* game_lineups
+* games
+* players
+
+Disponibilizamos el diccionario de datos de nuestra data [aquí]()
 
 # Desarrollo
 ## ETL

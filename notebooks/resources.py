@@ -1,4 +1,5 @@
 import zipfile
+import numpy as np
 import pandas as pd
 import os
 import missingno as msno
@@ -12,6 +13,34 @@ import re
 import warnings
 warnings.filterwarnings(action= 'ignore')
 
+
+
+
+def Imagen(path_relativo: str, size: tuple[int,int], path_absoluto:  None|str= None):
+
+    """
+    Esta funcion recibe un path relativo referente a una imagen (o un path absoluto), y el tamaño/dimensiones que
+    debe tener en forma de tupla (width, height)
+
+    devuelve la imagen pasada con las dimensiones obtenidas
+
+    parameters: path_relativo (str), size (tuple[int,int]), path_absoluto(None,str)
+
+    returns: None
+    """
+
+    import matplotlib.pyplot as plt
+    import matplotlib.image as mpimg
+
+
+
+    # Load image
+    image = mpimg.imread(path_relativo)
+    # Let the axes disappear
+    plt.figure(figsize= size)
+    plt.axis('off')
+    # Plot image in the output
+    image_plot = plt.imshow(image)
 
 
 
@@ -53,7 +82,7 @@ def instanciar_data(path: str) -> str|pd.DataFrame:
         return 'El archivo o la ruta del archivo no existe'
 
 
-
+#- INFORME PRELIMINAR
 
 #- VERIFICAR EL TIPO DE DATOS.
 
@@ -414,6 +443,125 @@ def hist_duplicados(dataframe: str|pd.DataFrame) -> None:
     else:
         print("No se encontraron registros duplicados.")
 
+
+
+#----------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------
+
+
+
+
+#- PARA ANÁLISIS DESCRIPTIVO
+
+#----------------------------------------------------------------------------------------------------
+
+def descripcion_distribucion(df: pd.DataFrame):
+    '''
+    Crea una serie de gráficos de barras y de torta que muestran la distribución de los valores de la feature/columna.
+
+    También imprime una serie de valores y métricas básicas en referencia a los valores y distribución de valores de la columna/feature
+
+    Parameters:
+        df (pandas.DataFrame): El DataFrame que contiene los datos de la recopilación de features de ICFES.
+
+    Returns:
+        None
+    '''
+
+    columnas = df.columns
+
+    for columna in columnas:
+        muestra = df[columna].value_counts().nlargest(10)
+
+        plt.figure(figsize=(20, 10))
+
+        if df[columna].dtype == 'object' or df[columna].dtype == 'datetime64[ns]':
+            # Gráfico de barras
+            plt.subplot(1, 2, 1)
+            ax = sns.barplot(x=muestra.index, y=muestra.values, data=muestra.to_frame().reset_index())
+            ax.set_title(f'Gráfico de distribución de frecuencias (primeros 5 valores) {columna}')
+            ax.set_xlabel(columna)
+            ax.set_ylabel('Cantidad de frecuencias')
+            plt.xticks(rotation=45)
+
+            # Gráfico de torta para las proporciones representativas de los datos
+            plt.subplot(1, 2, 2)
+            try:
+                plt.pie(x=muestra, labels=muestra.index, shadow=True, autopct='%1.1f%%')
+            except ValueError:
+                muestra = muestra[:5]  # Tomar solo las 5 categorías principales
+                plt.pie(x=muestra, labels=muestra.index, shadow=True, autopct='%1.1f%%')
+            plt.title('Distribución Relativa de Valores')
+            plt.xlabel(columna)
+            plt.xticks(rotation=45)
+            plt.grid()
+        else:
+            # Diagrama de caja para columnas numéricas
+            plt.subplot(1, 2, 1)
+            sns.boxplot(x=df[columna])
+            plt.title(f'Diagrama de caja para {columna}')
+
+            # Gráfico de torta para las proporciones representativas de los datos
+            plt.subplot(1, 2, 2)
+            try:
+                plt.pie(x=muestra, labels=muestra.index, shadow=True, autopct='%1.1f%%')
+            except ValueError:
+                muestra = muestra[:5]  # Tomar solo las 5 categorías principales
+                plt.pie(x=muestra, labels=muestra.index, shadow=True, autopct='%1.1f%%')
+            plt.title('Distribución Relativa de Valores')
+            plt.xlabel(columna)
+            plt.xticks(rotation=45)
+            plt.grid()
+
+
+        # Mostrar el gráfico
+        plt.show()
+
+        # Mostrar algunas estadísticas básicas
+        print('\n')
+        print('Estadísticas Básicas')
+        print('\n')
+        print(df[columna].describe())
+        print('-' * 160)
+        print('-' * 160)
+        print('\n')
+
+#----------------------------------------------------------------------------------------------------
+
+def apariciones_x_jugador(df):
+
+    """Esta funcion obtiene un dataframe y trabaja con la columna 
+    
+    """
+    # cambiamos el tipo de dato de la columna player_id
+    df['player_id'] = df['player_id'].astype(str)
+
+    # agrupamos la data en cuanto a frecuencias acumuladas, ordenamos de manera descendente segun la cantidad de frecuencias
+    data = df['player_id'].value_counts().nlargest(5).reset_index().sort_values(by= 'player_id', ascending= False)
+
+    #graficamos
+    plt.figure(figsize= (16,8))
+    sns.barplot(data= data, x='index', y='player_id', palette= 'viridis')
+
+    # Agregar el etiqueta con valor exacto en cada bin
+    for index, value in enumerate(data['player_id']):
+        plt.text(index, value, str(value), ha='center', va='bottom')
+
+    plt.xlabel('Jugador')
+    plt.ylabel('Cantidad de apariciones')
+    plt.xticks(rotation= 45)
+    plt.title('Cantidad de apariciones por jugador\n(primeros 5 con mayor cantidad)')
+    plt.show()
+
+#----------------------------------------------------------------------------------------------------
+
+
+def minutos_x_partido():
+
+
+#----------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------
 
 def main():
