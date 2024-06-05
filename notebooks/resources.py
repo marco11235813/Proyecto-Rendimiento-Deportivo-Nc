@@ -531,7 +531,13 @@ def descripcion_distribucion(df: pd.DataFrame):
 
 def apariciones_x_jugador(df):
 
-    """Esta funcion obtiene un dataframe y trabaja con la columna 
+    """Esta funcion obtiene un dataframe y trabaja con la columna player_id,
+    devuelve un grafico de barras que muestra la frecuencia acumulada de las
+     apariciones de jugadores en partidos.
+
+     Parameters: df (DataFrame)
+
+     Returns: Barplot
     
     """
     # cambiamos el tipo de dato de la columna player_id
@@ -553,12 +559,119 @@ def apariciones_x_jugador(df):
     plt.xticks(rotation= 45)
     plt.title('Cantidad de apariciones por jugador\n(primeros 5 con mayor cantidad)')
     plt.show()
+    
+
+    jugadores = {}
+    ids = list(data['index'].unique())
+    # ids = ['38253','32467','59561','65230','74229']
+    for llave in ids:
+        jugadores.setdefault(llave, str(list(df['player_name'][df['player_id'] == llave].unique())[0]))
+    return jugadores
 
 #----------------------------------------------------------------------------------------------------
 
 
-def minutos_x_partido():
+def minutos_x_partido(df):
 
+    """Esta funcion toma un Dataframe y trabaja con su columna minutes_played.
+    Devuelve una serie de graficos que muestran la distribucion y dispersion de valores de minutos jugados
+    por jugador por partido
+
+    Parameteers: df (DataFrame)
+
+    Returns: Boxplot, Pie, Barplot
+    
+    """
+    data = df['minutes_played'].value_counts().nlargest(7).reset_index().sort_values(by= 'minutes_played', ascending= False)
+    # print(data['minutes_played'])
+    # 1-Boxplot
+    plt.figure(figsize= (16,8))
+    plt.subplot(1,2,1)
+    sns.boxplot(data= df, x= df['minutes_played'].astype(int))
+    plt.title('Distribucion de minutos jugados (por jugador por partido)')
+    plt.xlabel('Minutos Jugados')
+
+    
+    # 2-Pie
+    plt.subplot(1,2,2)
+    plt.pie(x= data['minutes_played'],  shadow= True,  autopct='%1.1f%%')
+    plt.title('Proporción de Minutos Jugados\n(por jugador por partido)')
+    plt.legend('Minutos Jugados', data['index'])
+    plt.xlabel('Minutos Jugados')
+
+    plt.show()
+
+    data['index'] = data['index'].astype(str)
+
+    # 3-Barras o Histograma
+    plt.figure(figsize= (16,8))
+    sns.barplot(data= data, x= data['index'], y= data['minutes_played'])
+    plt.title('Minutos jugados por jugadores en cada partido')
+    plt.xlabel('Minutos_jugados')
+    plt.ylabel('Cantidad de jugadores')
+
+    # Agregar el etiqueta con valor exacto en cada bin
+    for index, value in enumerate(data['minutes_played']):
+        plt.text(index, value, str(value), ha='center', va='bottom')
+
+
+    plt.show()
+
+
+#----------------------------------------------------------------------------------------------------
+
+def tarjetas_x_jugador(df):
+
+    """Esta funcion toma un dataframe y realiza una agrupacion de datos de cantidades de tarjetas por jugador
+
+    Devuelve un grafico de barras con los 10 jugadores con mayor cantidad de tarjetas.
+
+    Parameters: df (DataFrame).
+
+    Returns: barplot. 
+    
+    """
+    data = df.groupby('player_id').agg({'yellow_cards': 'sum', 'red_cards': 'sum'}).reset_index()
+    data['total_cards'] = data['yellow_cards'] + data['red_cards']
+    data = data.nlargest(10, 'total_cards').sort_values(by= 'total_cards', ascending= False)
+    
+    # Calcula la posición base de las barras rojas
+    base_position = data['red_cards'].values
+
+    #graficamos
+    plt.figure(figsize= (16,8))
+
+    # Obtener las alturas de las barras amarillas y rojas
+    yellow_heights = data['yellow_cards'].values
+    red_heights = data['red_cards'].values
+
+    # Coordenadas de x para las barras
+    x = np.arange(len(data))
+
+    # Graficar las barras amarillas
+    plt.bar(x, yellow_heights, color='yellow', label='Tarjetas Amarillas')
+
+    # Graficar las barras rojas, apiladas sobre las amarillas
+    plt.bar(x, red_heights, bottom=yellow_heights, color='red', label='Tarjetas Rojas')
+
+
+
+    plt.title('Cantidad de tarjetas por jugador')
+    plt.xlabel('Jugador')
+    plt.ylabel('Cantidad de tarjetas')
+    plt.xticks(x, data['player_id'])
+    plt.show()
+
+    return data
+#----------------------------------------------------------------------------------------------------
+
+
+def goles_y_asistencias():
+
+    """
+    
+    """
+    
 
 #----------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------
