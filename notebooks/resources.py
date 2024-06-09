@@ -528,7 +528,7 @@ def descripcion_distribucion(df: pd.DataFrame):
         print('\n')
 
 #----------------------------------------------------------------------------------------------------
-
+## APPEARANCES
 def apariciones_x_jugador(df):
 
     """Esta funcion obtiene un dataframe y trabaja con la columna player_id,
@@ -666,12 +666,262 @@ def tarjetas_x_jugador(df):
 #----------------------------------------------------------------------------------------------------
 
 
-def goles_y_asistencias():
+def goles_y_asistencias(df):
+
+    """ Esta función agrupa el DataFrame por 'player_id' y el año de la columna 'date',
+    sumando los goles y asistencias para cada jugador en cada año.
+    Luego, genera gráficos de barras para cada año mostrando la participación total en goles de cada jugador.
+
+    Parameters: df (DataFrame)
+
+    Returns: barplots
+    """
+    df['year']= df['date'].dt.year
+    data = df.groupby(['player_id', 'player_name', 'year']).agg({'goals': 'sum', 'assists': 'sum'}).reset_index()
+    data['total_participacion_goles'] = data['goals'] + data['assists']
+
+    por_temporada = data.sort_values(by= ['year', 'total_participacion_goles'], ascending= [True, False])
+    años = df['date'].dt.year.unique()
+
+    # Se define el número de filas y columnas para la cuadrícula de subgráficos
+    n_filas = 7
+    n_columnas = 2
+
+    # Se crea una figura con subgráficos en una cuadrícula de 2*7
+    fig, axes = plt.subplots(n_filas, n_columnas, figsize=(20, 30))
+
+    # Se itera a través de los años y crea un gráfico por año
+    for i, año in enumerate(años):
+        fila = i // n_columnas
+        columna = i % n_columnas
+        
+        # temp = (por_temporada[por_temporada['year'] == año]
+        #         .groupby('player_id')['total_participacion_goles'])
+
+        temp = por_temporada[por_temporada['year'] == año].set_index('player_id')['total_participacion_goles'].nlargest(5)
+        
+        # Se configura el subgráfico actual
+        ax = axes[fila, columna]
+        temp.plot(ax=ax, kind='bar')
+        ax.set_title('Año ' + str(año)) ; ax.set_xlabel('Jugador') ; ax.set_ylabel('Goles + Asistencias')
+        ax.legend_ = None
+    
+    plt.tight_layout()
+    plt.show()
+
+    return por_temporada
+#----------------------------------------------------------------------------------------------------
+##CLUBS
+
+def tamaño_promedio_plantillas(df):
+
+    """Esta función calcula el tamaño promedio de las plantillas de los clubes
+    y genera un gráfico de barras con los 7 clubes con el tamaño promedio más grande,
+    junto con una línea que muestra el promedio general del tamaño de las plantillas.
+    
+    Parameters: df (DataFrame)
+
+    Returns: Dataframe, barplot
+    """
+    # agrupamos los datos por club_id y por nombre (para obtener las etiquetas)
+
+    df = df[df['squad_size'] > 0] # filtramos los valores 0, ya que originalmente no contenian dato en el campo squad_size y producirian sesgo en el valor promedio
+    data = df.groupby(['club_id', 'name']).agg({'squad_size': 'mean'}).sort_values(by= 'squad_size', ascending= False).reset_index()
+    muestra= data.nlargest(7, columns= 'squad_size') # tomamos solamente los 7 valores con mayor promedio
+    promedio_general = data['squad_size'].mean()
+
+    #graficamos
+    plt.figure(figsize= (16,8))
+
+    sns.barplot(data= muestra, x= 'name', y= 'squad_size', color= 'green')
+
+   # Agregamos una línea roja que muestra el promedio general del tamaño de las plantillas
+    plt.axhline(y=promedio_general, color='red', linestyle='--', label= f'Valor promedio: {promedio_general: .2f}')
+
+    plt.title('Distribucion de promedios de tamaño de plantillas (primeros 7 clubes)')
+    plt.xlabel('Club')
+    plt.ylabel('Promedio cantidad integrantes')
+    plt.xticks(rotation= 45)
+    plt.legend(loc= 'upper right')
+
+    plt.tight_layout() # ajustamos el grafico
+    plt.show()
+
+    return data
+
+#----------------------------------------------------------------------------------------------------
+
+
+def extranjeros_x_club(df):
+
+    """ Visualiza la distribución de la cantidad de jugadores extranjeros por club 
+    para los 10 clubes con más jugadores extranjeros.
+
+    Parameters: df (Dataframe)
+
+    Returns: DataFrame, barplot.
+    
+    """
+    data = df.groupby(['club_id', 'name']).agg({'foreigners_number': 'sum'}).sort_values(by= 'foreigners_number', ascending= False).reset_index()
+    data = data.nlargest(10, columns= 'foreigners_number')
+
+    plt.figure(figsize= (16,8))
+
+    sns.barplot(data= data, x= 'name', y= 'foreigners_number', color= 'brown')
+
+    plt.title('Distribucion cantidad de jugadores extranjeros por club (primeros 10)')
+    plt.xlabel('Club')
+    plt.ylabel('Cantidad de jugadores')
+    plt.xticks(rotation= 45)
+    
+    plt.show()
+
+
+    return data
+
+#----------------------------------------------------------------------------------------------------
+
+
+def jugadores_en_selecciones(df):
+
+    """ Visualiza la distribución de la cantidad de jugadores en selecciones nacionales
+    por club para los 10 clubes con más jugadores en selecciones.
+
+    Parameters: df (Dataframe)
+
+    Returns: DataFrame, barplot.
+    
+    """
+    data = df.groupby(['club_id', 'name']).agg({'national_team_players': 'sum'}).sort_values(by= 'national_team_players', ascending= False).reset_index()
+    data = data.nlargest(10, columns= 'national_team_players')
+
+    plt.figure(figsize= (16,8))
+
+    sns.barplot(data= data, x= 'name', y= 'national_team_players', color= 'black')
+
+    plt.title('Distribucion cantidad de jugadores en selecciones nacionales\npor club (primeros 10)')
+    plt.xlabel('Club')
+    plt.ylabel('Cantidad de jugadores en selecciones')
+    plt.xticks(rotation= 45)
+    
+    plt.show()
+
+
+    return data
+
+
+
+#----------------------------------------------------------------------------------------------------
+
+
+def estadio_x_tamaño_club(df):
 
     """
     
     """
+
+    data = df[['club_id', 'name', 'stadium_seats', 'squad_size']].sort_values(by= ['stadium_seats', 'squad_size'], ascending= [False, False])
+    corr= data[['stadium_seats', 'squad_size']].corr()
+    print(f'\nValor de Correlacioin lineal entre la capacidad del estadio y el tamaño del club:\n')
+    print(corr)
+
+    # graficamos
+    plt.figure(figsize= (16,8))
+    sns.scatterplot(data= data, x= 'squad_size', y= 'stadium_seats')
+
+    plt.title('Relacion Capacidad del estadio vs Tamaño del Club')
+    plt.xlabel('Tamaño del Club')
+    plt.ylabel('stadium_seats')
+
+    plt.show()
+
+
+    return data
+#----------------------------------------------------------------------------------------------------
+
+def transferencias_x_club(df):
+
+    """
     
+    
+    """
+    temp = df[df['net_transfer_record'] > 0.0]
+    data = temp[['name', 'net_transfer_record']].sort_values(by= 'net_transfer_record', ascending= False).nlargest(10, columns= 'net_transfer_record')
+    data_mean= temp['net_transfer_record'].mean()
+
+    plt.figure(figsize= (16,8))
+    sns.barplot(data= data, x= 'name', y= 'net_transfer_record')
+
+    plt.axhline(y= data_mean , color= 'red', linestyle= '--', label= f'Promedio de clubes: {round(data_mean, 2)}' )
+
+    plt.title('Transferencias Netas por club (10 primeros)')
+    plt.xlabel('Club')
+    plt.ylabel('Valor neto (en miles de euros)')
+    plt.xticks(rotation= 45)
+    plt.legend(loc= 'upper right')
+
+    plt.show()
+
+
+    return data
+
+#----------------------------------------------------------------------------------------------------
+##CLUB_GAMES
+
+def goles_x_local_o_oponente(df):
+
+    """
+    
+    """
+
+    temp = df[['game_id', 'own_goals', 'opponent_goals']]
+    temp['scores'] = temp['own_goals'].astype(str) + '-' + temp['opponent_goals'].astype(str)
+    data = temp.groupby(['game_id', 'scores']).agg({'own_goals': 'first', 'opponent_goals': 'first'}).reset_index()
+    muestra = data['scores'].value_counts().reset_index().nlargest(7, columns= 'scores')
+
+
+    # graficamos
+    plt.figure(figsize= (20,10))
+
+    plt.subplot(1,2,1)
+    sns.barplot(data= muestra, x= muestra['index'], y= muestra['scores'])
+    plt.title('Distribucion de marcador en partidos')
+    plt.xlabel('Marcador(own and opponent)')
+    plt.ylabel('Frecuencia')
+    plt.xticks(rotation= 45)
+
+    plt.subplot(1,2,2)
+    plt.pie(data= muestra, x= muestra['scores'], labels= muestra['index'], shadow= True, autopct= '%1.1f%%')
+    plt.title('Proporcion de Marcadores')
+    plt.xlabel('Marcadores')
+
+    plt.tight_layout()
+    plt.show()
+
+
+    plt.figure(figsize= (20,10))
+    # Gráfico de distribución de goles propios vs goles del opone
+    plt.subplot(1,2,1)
+    sns.histplot(data=data, x='own_goals', y='opponent_goals', bins=30, pthresh=0.1, cmap="Blues")
+    plt.title('Distribución de goles propios vs goles del oponente')
+    plt.xlabel('Goles propios')
+    plt.ylabel('Goles del oponente')
+
+    # Grafico de dispersion
+    plt.subplot(1,2,2)
+    sns.scatterplot(data= data,x= 'own_goals',y= 'opponent_goals')
+    plt.title('Distribucion de goles propios vs goles del oponente')
+    plt.xlabel('own')
+    plt.ylabel('opponent')
+
+
+    plt.tight_layout()
+    plt.show()
+
+
+
+    return data, muestra
+
 
 #----------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------
