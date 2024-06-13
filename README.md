@@ -118,11 +118,12 @@ El Informe ETL proporciona un análisis detallado de la calidad y las caracterí
 El proceso de Preparación de Datos comenzó con una exhaustiva limpieza y preprocesamiento para garantizar la calidad y coherencia de los datos recopilados. Posteriormente, se llevó a cabo un Análisis Exploratorio de Datos, utilizando técnicas estadísticas y herramientas de visualización para comprender la estructura y distribución de los datos, identificando patrones, tendencias y relaciones entre las variables.
 
 En el Análisis Descriptivo, se examinaron diversas variables
+
 ## Dashboard
+
+Disponibilizamos el link de nuestro dashboard aquí [link al repositorio externo](https://drive.google.com/file/d/1CdmsJfXDvFW8jB-WrEXQD3SqSRz-swcC/view?usp=drive_link)
 ## Modelo
 ## Deploy
-
-Disponibilizamos el link de nuestro deploy [aquí]()
 
 # Tecnologías
 
