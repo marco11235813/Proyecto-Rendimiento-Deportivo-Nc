@@ -816,7 +816,12 @@ def jugadores_en_selecciones(df):
 
 def estadio_x_tamaño_club(df):
 
-    """
+    """Esta función analiza la relación entre la capacidad del estadio y el tamaño del club.
+    
+    Parámetros: df (DataFrame): DataFrame que contiene los datos del club, incluyendo 
+                las columnas 'club_id', 'name', 'stadium_seats' y 'squad_size'.
+    
+    Retorna: DataFrame (DataFrame ordenado por 'stadium_seats' y 'squad_size').
     
     """
 
@@ -841,7 +846,13 @@ def estadio_x_tamaño_club(df):
 
 def transferencias_x_club(df):
 
-    """
+    """Esta función analiza las transferencias netas por club y grafica los 10 primeros clubes
+    con mayores valores netos de transferencia.
+
+    Parámetros: df (DataFrame): DataFrame que contiene los datos del club, incluyendo 
+                las columnas 'name' y 'net_transfer_record'.
+
+    Retorna: DataFrame (DataFrame con los 10 clubes con mayores valores netos de transferencia).
     
     
     """
@@ -870,13 +881,19 @@ def transferencias_x_club(df):
 
 def goles_x_local_o_oponente(df):
 
-    """
+    """ Esta función analiza y grafica la distribución de los marcadores de goles propios y del oponente
+    en partidos, mostrando los 7 marcadores más frecuentes y sus proporciones.
+
+    Parámetros: df (DataFrame): DataFrame que contiene los datos de los partidos, incluyendo 
+                las columnas 'game_id', 'own_goals' y 'opponent_goals'.
+
+    Retorna: DataFrame (DataFrame con los 7 marcadores más frecuentes y sus frecuencias).
     
     """
 
     temp = df[['game_id', 'own_goals', 'opponent_goals']]
-    temp['scores'] = temp['own_goals'].astype(str) + '-' + temp['opponent_goals'].astype(str)
-    data = temp.groupby(['game_id', 'scores']).agg({'own_goals': 'first', 'opponent_goals': 'first'}).reset_index()
+    data = temp.groupby(['game_id']).agg({'own_goals': 'first', 'opponent_goals': 'first'}).reset_index()
+    data['scores'] = data['own_goals'].astype(str) + '-' + data['opponent_goals'].astype(str)
     muestra = data['scores'].value_counts().reset_index().nlargest(7, columns= 'scores')
 
 
@@ -885,14 +902,14 @@ def goles_x_local_o_oponente(df):
 
     plt.subplot(1,2,1)
     sns.barplot(data= muestra, x= muestra['index'], y= muestra['scores'])
-    plt.title('Distribucion de marcador en partidos')
-    plt.xlabel('Marcador(own and opponent)')
+    plt.title('Distribucion de marcador en partidos (entre los 7 mas frecuentes)')
+    plt.xlabel('Marcador(own -- opponent)')
     plt.ylabel('Frecuencia')
     plt.xticks(rotation= 45)
 
     plt.subplot(1,2,2)
     plt.pie(data= muestra, x= muestra['scores'], labels= muestra['index'], shadow= True, autopct= '%1.1f%%')
-    plt.title('Proporcion de Marcadores')
+    plt.title('Proporcion de Marcadores (entre los 7 primeros)')
     plt.xlabel('Marcadores')
 
     plt.tight_layout()
@@ -920,8 +937,47 @@ def goles_x_local_o_oponente(df):
 
 
 
-    return data, muestra
+    return muestra
 
+
+#----------------------------------------------------------------------------------------------------
+
+
+def victorias_como_locales(df):
+
+    """Esta función analiza las victorias como local por club y grafica los 7 clubes con más victorias.
+
+    Parámetros: df (DataFrame), DataFrame que contiene los datos de los partidos, incluyendo 
+                    las columnas 'hosting', 'is_win' y 'club_id'.
+
+    Retorna: DataFrame (DataFrame con los 7 clubes con más victorias como local).
+    
+    """
+    ## para its_win:
+    ## 0 = False
+    ## 1 = True
+
+    temp = df[(df['hosting'] == 'Home') & (df['is_win'] == 1)]
+    temp = temp.groupby('club_id').agg({'is_win': 'sum'}).reset_index()
+    data = temp.sort_values(by= 'is_win', ascending= False).nlargest(7, columns= 'is_win')
+    data['club_id'] = data['club_id'].astype(str)
+
+    #graficamos
+    plt.figure(figsize= (16,8))
+    sns.barplot(data= data, x= 'club_id', y= 'is_win')
+    plt.title('Cantidad de Victorias como local por club')
+    plt.xlabel('Club')
+    plt.ylabel('Cantidad de Victorias')
+
+    plt.show()
+
+    return data
+
+
+#----------------------------------------------------------------------------------------------------
+
+def correlacion_posicion_x_goles_anotados():
+    return
 
 #----------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------

@@ -28,11 +28,12 @@
 - [Datos](#Datos)
 - [Desarrollo](#Desarrollo)
   - [ETL](#ETL)
-  - [Análisis Exploratorio de Datos (EDA)](#Análisis%20Exploratorio%20de%20Datos%20(EDA))
+  - [EDA](#EDA)
   - [Dashboard](#Dashboard)
   - [Modelo](#Modelo)
   - [Deploy](#Deploy)
-- [Tecnologias y Herramientas](#Tecnologias%20y%20Herramientas)
+- [Tecnologías](#Tecnologías)
+- [Documentación](#Documentación)
 - [Equipo](#Equipo)
 
 # Descripción
@@ -100,12 +101,52 @@ Esta data se descargo en una carpeta comprimida, archivos json liga brasil.zip, 
 Disponibilizamos el diccionario de datos de nuestra data [aquí]()
 
 # Desarrollo
+
 ## ETL
-## Análisis Exploratorio de Datos (EDA)
+
+En la fase de Transformación de Datos (ETL), se llevaron a cabo una serie de procedimientos para garantizar la preparación adecuada y la limpieza exhaustiva de los datos antes de su carga en el almacén de datos. Estas acciones incluyeron:
+
+Verificación del tipo de datos de cada columna: Se examinó minuciosamente el tipo de datos de cada columna para garantizar su coherencia y precisión en el análisis posterior.
+Análisis de la dimensionalidad de los datos: Se exploró la estructura del conjunto de datos para comprender su tamaño y complejidad, lo que permitió una mejor comprensión de la cantidad de registros y variables presentes.
+Manejo de valores nulos: Se identificaron y abordaron los valores nulos en el conjunto de datos mediante técnicas como la imputación de datos o la eliminación de registros incompletos, con el fin de evitar sesgos o distorsiones en el análisis posterior.
+Verificación visual de valores atípicos: Se realizó una exploración gráfica de los datos para detectar posibles valores atípicos o anomalías que podrían afectar la integridad y la precisión de los resultados.
+Indagación de consistencia de los datos: Se llevaron a cabo investigaciones exhaustivas sobre la consistencia de los datos, incluyendo la identificación de máximos, mínimos y rangos de valores para cada variable, lo que ayudó a garantizar la fiabilidad de los datos utilizados en el análisis.
+El Informe ETL proporciona un análisis detallado de la calidad y las características de los datos originales, y ofrece funciones específicas para examinar y explorar los datos en profundidad. Estas funciones incluyen la visualización de valores nulos, análisis de frecuencia de palabras, boxplots numéricos y más, lo que facilita la identificación de patrones, tendencias y relaciones significativas en los datos.
+
+## EDA
+
+El proceso de Preparación de Datos comenzó con una exhaustiva limpieza y preprocesamiento para garantizar la calidad y coherencia de los datos recopilados. Posteriormente, se llevó a cabo un Análisis Exploratorio de Datos, utilizando técnicas estadísticas y herramientas de visualización para comprender la estructura y distribución de los datos, identificando patrones, tendencias y relaciones entre las variables.
+
+En el Análisis Descriptivo, se examinaron diversas variables
 ## Dashboard
 ## Modelo
 ## Deploy
-# Tecnologias y Herramientas
+
+Disponibilizamos el link de nuestro deploy [aquí]()
+
+# Tecnologías
+
+* ![Markdown](https://img.shields.io/badge/-Markdown-black?style=flat&logo=markdown)
+* ![Python](https://img.shields.io/badge/-Python-black?style=flat-square&logo=Python)
+* ![Pandas](https://img.shields.io/badge/-Pandas-black?style=flat&logo=pandas)
+* ![Numpy](https://img.shields.io/badge/-Numpy-black?style=flat&logo=numpy)
+* ![Matplotlib](https://img.shields.io/badge/-Matplotlib-black?style=flat&logo=matplotlib)
+* ![Seaborn](https://img.shields.io/badge/-Seaborn-black?style=flat&logo=seaborn)
+* ![Scikitlearn](https://img.shields.io/badge/-Scikitlearn-black?style=flat&logo=scikitlearn)
+* ![PowerBI](https://img.shields.io/badge/-PowerBI-black?style=flat&logo=powerbi)
+* ![PowerQuery](https://img.shields.io/badge/-PowerQuery-black?style=flat&logo=powerquery)
+* ![AWS](https://img.shields.io/badge/-AWS-black?style=flat-square&logo=aws)
+* ![Git](https://img.shields.io/badge/-Git-black?style=flat-square&logo=git)
+* ![GitHub](https://img.shields.io/badge/-GitHub-black?style=flat-square&logo=github)
+* ![Jupyter](https://img.shields.io/badge/-Jupyter-black?style=flat&logo=jupyter)
+* ![colab](https://img.shields.io/badge/-colab-black?style=flat&logo=colabbadge)
+* ![Visual Studio Code](https://img.shields.io/badge/-Visual%20Studio%20Code-black?style=flat&logo=visual-studio-code&logoColor=007ACC)
+
+
+# Documentacion
+
+Ponemos a disposición la documentación del desarrollo integral del proyecto, como informe de presentacion empresarial, para el entendimiento del enfoque principal, el desarrollo, la metodología y las diferentes etapas recorridas en el análisis de los datos y la construcción de los insights. Podemos ver la documentacion completa de nuestro proyecto [aquí](docs/Documentacion_AyC_DeRabona.docx)
+
 # Equipo
 
 <div align="center">
