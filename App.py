@@ -109,7 +109,3 @@ def mostrar_tabla_posiciones(tabla_posiciones):
 st.markdown('<h2 class="subheader">Tabla de Posiciones</h2>', unsafe_allow_html=True)
 tabla_posiciones = obtener_tabla_posiciones('2013')
 mostrar_tabla_posiciones(tabla_posiciones)
-
-
-# <iframe title="nocountry_rendimientodeportivo_kpis" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiOTI0OGM3MzUtNzIzZi00ODI0LTllNTItMmM2ZDRjNTljZWI0IiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9" frameborder="0" allowFullScreen="true">
-# </iframe>
