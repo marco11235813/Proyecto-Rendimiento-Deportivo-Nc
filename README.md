@@ -113,6 +113,60 @@ Verificación visual de valores atípicos: Se realizó una exploración gráfica
 Indagación de consistencia de los datos: Se llevaron a cabo investigaciones exhaustivas sobre la consistencia de los datos, incluyendo la identificación de máximos, mínimos y rangos de valores para cada variable, lo que ayudó a garantizar la fiabilidad de los datos utilizados en el análisis.
 El Informe ETL proporciona un análisis detallado de la calidad y las características de los datos originales, y ofrece funciones específicas para examinar y explorar los datos en profundidad. Estas funciones incluyen la visualización de valores nulos, análisis de frecuencia de palabras, boxplots numéricos y más, lo que facilita la identificación de patrones, tendencias y relaciones significativas en los datos.
 
+### Scraper de Transfermarkt
+
+Este proyecto utiliza un contenedor Docker para ejecutar un scraper de datos de Transfermarkt. A continuación se detallan los comandos necesarios para correr el scraper.
+
+#### Requisitos
+
+- Docker: Asegúrate de tener Docker instalado y corriendo en tu sistema.
+- Archivos de configuración: Los archivos `confederations.json` y `competitions.json` deben estar presentes en el directorio `samples` de tu proyecto.
+
+#### Paso 1: Ejecutar el Scraper de Competiciones
+
+Para iniciar el scraper de competiciones, usa el siguiente comando:
+
+```bash
+docker run \
+    -ti -v "$(pwd)"/.:/app \
+    dcaribou/transfermarkt-scraper:main \
+    scrapy crawl competitions -a parents=samples/confederations.json
+```
+
+Este comando hace lo siguiente:
+
+- `-ti`: Inicia el contenedor en modo interactivo.
+- `-v "$(pwd)"/.:/app`: Monta el directorio actual (`$(pwd)`) en el directorio `/app` dentro del contenedor.
+- `dcaribou/transfermarkt-scraper:main`: Utiliza la imagen de Docker `dcaribou/transfermarkt-scraper` con la etiqueta `main`.
+- `scrapy crawl competitions -a parents=samples/confederations.json`: Ejecuta el scraper de Scrapy para competiciones, usando el archivo `samples/confederations.json` como entrada.
+
+#### Paso 2: Ejecutar el Scraper de Juegos
+
+Una vez que se han extraído las competiciones, puedes ejecutar el scraper de juegos con el siguiente comando:
+
+```bash
+docker run \
+    -ti -v "$(pwd)"/.:/app \
+    dcaribou/transfermarkt-scraper:main \
+    scrapy crawl games -o games2023.json -a parents=samples/competitions.json -a season=2023
+```
+
+Este comando hace lo siguiente:
+
+- `-ti`: Inicia el contenedor en modo interactivo.
+- `-v "$(pwd)"/.:/app`: Monta el directorio actual (`$(pwd)`) en el directorio `/app` dentro del contenedor.
+- `dcaribou/transfermarkt-scraper:main`: Utiliza la imagen de Docker `dcaribou/transfermarkt-scraper` con la etiqueta `main`.
+- `scrapy crawl games -o games2023.json -a parents=samples/competitions.json -a season=2023`: Ejecuta el scraper de Scrapy para juegos, guardando los resultados en el archivo `games2023.json`, utilizando el archivo `samples/competitions.json` como entrada y especificando la temporada 2023.
+
+#### Notas
+
+- Asegúrate de tener Docker instalado y corriendo en tu sistema.
+- Los archivos `confederations.json` y `competitions.json` deben estar presentes en el directorio `samples` de tu proyecto.
+- Los datos extraídos se almacenarán en el directorio actual desde donde se ejecuta el comando Docker, gracias a la opción `-v "$(pwd)"/.:/app` que monta el directorio actual dentro del contenedor.
+
+Con estos comandos, podrás extraer datos de competiciones y juegos desde Transfermarkt de manera eficiente utilizando Docker y Scrapy.
+
+
 ## EDA
 
 El proceso de Preparación de Datos comenzó con una exhaustiva limpieza y preprocesamiento para garantizar la calidad y coherencia de los datos recopilados. Posteriormente, se llevó a cabo un Análisis Exploratorio de Datos, utilizando técnicas estadísticas y herramientas de visualización para comprender la estructura y distribución de los datos, identificando patrones, tendencias y relaciones entre las variables.
