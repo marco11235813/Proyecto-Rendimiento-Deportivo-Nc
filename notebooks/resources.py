@@ -976,8 +976,164 @@ def victorias_como_locales(df):
 
 #----------------------------------------------------------------------------------------------------
 
-def correlacion_posicion_x_goles_anotados():
+def correlacion_posicion_x_goles_anotados(df):
+ 
+    """Esta función toma un DataFrame y realiza un análisis de correlación entre 
+    las posiciones de los jugadores y los goles anotados. La función crea 
+    gráficos de dispersión y de densidad, y calcula las correlaciones de Pearson 
+    y Spearman, presentando los resultados en mapas de calor.
+
+    Parámetros:
+    df (DataFrame): Un DataFrame que contiene las columnas 'own_position' y 'own_goals'.
+
+    Retorna:
+    DataFrame: El DataFrame filtrado utilizado en el análisis.
+    
+    """
+
+    data = df[['own_position', 'own_goals']]
+    data = data[data['own_position'] != -1] # recordemos que el valor -1 se utilizo para reemplazar valores nan, era donde faltaban valores para la categoria.
+
+    plt.figure(figsize= (16,8))
+    plt.subplot(2,1,1)
+    sns.scatterplot(data= data, x= 'own_position', y= 'own_goals')
+    plt.title('Grafico de dispersión y densidad own_position vs own_goals')
+    plt.xlabel('Position')
+    plt.ylabel('Goals')
+
+    plt.subplot(2,1,2)
+    sns.kdeplot(data= data, x= 'own_position', y= 'own_goals', fill= True, cbar= True)
+    plt.tight_layout()
+    plt.show()
+
+
+
+    corr_pearson = data.corr()
+    corr_spearman = data.corr(method= 'spearman')
+
+
+    plt.figure(figsize= (16,8))
+    plt.subplot(2,1,1)
+    sns.heatmap(corr_pearson, annot= True, cmap= 'magma')
+    plt.title('Grado de correlación Pearson (lineal)')
+
+
+    plt.subplot(2,1,2)
+    sns.heatmap(corr_spearman, annot= True, cmap= 'magma')
+    plt.title('Grado de correlación Spearman (monotona)')
+
+    plt.show()
+    return data
+
+#----------------------------------------------------------------------------------------------------
+def etiquetas(valor1, valor2):
+
+    """Función auxiliar que etiqueta el resultado del partido basado en los goles propios y del oponente.
+
+    Parámetros:
+    valor1 (int): Goles anotados por el propio equipo.
+    valor2 (int): Goles anotados por el equipo oponente.
+
+    Retorna:
+    str: 'draw' si es un empate, 'win' si el propio equipo gana, 'lose' si el propio equipo pierde.
+    
+    """
+
+    if valor1 - valor2 == 0:
+        return 'draw'
+    elif valor1 > valor2:
+        return 'win'
+    elif valor1 < valor2:
+        return 'lose'
+
+def resultado_partido_x_club(df):
+
+    """Calcula y visualiza los resultados de los partidos por club.
+    
+    Args:
+    df (pd.DataFrame): DataFrame con las columnas 'club_id', 'own_goals', y 'opponent_goals'.
+    
+    Returns:
+    pd.DataFrame: DataFrame con los resultados calculados y proporciones.
+    
+    """
+    
+    df['results'] = df.apply(lambda row: etiquetas(row['own_goals'], row['opponent_goals']), axis= 1)
+    # Contar los resultados por club
+    data = df.groupby(['club_id', 'results']).size().unstack(fill_value=0).reset_index()
+    data['draw_mean'] = data.apply(lambda row: round(row['draw'] / (row['draw'] + row['lose'] + row['win']) * 100, 2), axis= 1)
+    data['win_mean'] = data.apply(lambda row: round(row['win'] / (row['draw'] + row['lose'] + row['win']) * 100, 2), axis= 1)
+    data['lose_mean'] = data.apply(lambda row: round(row['lose'] / (row['draw'] + row['lose'] + row['win']) * 100, 2), axis= 1)
+    data['total_games'] = data['draw'] + data['lose'] + data['win']
+    data.sort_values(by= 'total_games', ascending= False, inplace= True)
+    muestra = data.iloc[0:7]
+
+    # Crear el gráfico de barras agrupadas
+    muestra.set_index('club_id')[['draw', 'lose', 'win']].plot(kind='bar', stacked=False, figsize=(12, 8))
+    plt.title('Resultados de los partidos por club')
+    plt.xlabel('Club ID')
+    plt.ylabel('Número de Partidos')
+    plt.xticks(rotation=0)
+    plt.legend(title='Resultados')
+
+    plt.tight_layout()
+    plt.grid()
+    plt.show()
+
+    return data
+#----------------------------------------------------------------------------------------------------
+
+def rendimiento_entrenadores(df):
+
+    """ Esta función calcula el rendimiento de los entrenadores por club,
+    mostrando el número de partidos ganados en casa y fuera de casa,
+    y un gráfico adicional con la distribución de partidos por localía y resultado.
+
+    Parámetros:
+    df (DataFrame): DataFrame que contiene los datos de los partidos.
+
+    Retorna:
+    data (DataFrame): DataFrame con el número de partidos ganados en casa y fuera de casa por cada entrenador.
+    
+    
+    """
+
+    temp = df[['own_manager_name', 'hosting', 'is_win']]
+    data = temp[temp['is_win'] == 1].groupby(['own_manager_name', 'hosting']).size().unstack(fill_value= 0).reset_index()
+    muestra = data.iloc[0:7]
+
+    # Crear el gráfico de barras agrupadas
+    muestra.set_index('own_manager_name')[['Home', 'Away']].plot(kind='bar', stacked=False, figsize=(12, 8))
+    plt.title('Rendimiento de entrenadores por club por localia')
+    plt.xlabel('Manager_name')
+    plt.ylabel('Número de Partidos')
+    plt.xticks(rotation=0)
+    plt.legend(title='Resultados')
+    plt.grid()
+    plt.show()
+
+    plt.figure(figsize= (16,8))
+    sns.countplot(data= temp, x= 'hosting', hue= 'is_win')
+    plt.title('Rendimiento por localia')
+    plt.xlabel('Hosting')
+    plt.ylabel('Número de Partidos')
+    plt.xticks(rotation=0)
+    plt.legend(title='Is win')
+    plt.grid()
+
+
+    plt.tight_layout()
+    plt.show()
+
+
+
+    return data
+
+#----------------------------------------------------------------------------------------------------
+
+def ():
     return
+
 
 #----------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------
